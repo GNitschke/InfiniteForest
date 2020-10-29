@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
-    private void OnCollisionEnter(Collision collision)
-    {
-        
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        
-    }
+    public float x;
+    public float y;
 }
