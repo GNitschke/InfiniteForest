@@ -7,7 +7,8 @@ public class GenerateTree : MonoBehaviour
 {
     public GameObject Treefab;
 
-    public float chunkWidth;
+    public int chunkWidth;
+    public int numChunks;
     public float seed;
 
     public Chunk currChunk;
@@ -17,19 +18,21 @@ public class GenerateTree : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        chunkWidth = 10f;
+        chunkWidth = 10;
+        numChunks = 4;
+        numChunks -= numChunks % 2;
         seed = 0f;
-        for(int i = -5; i < 5; i++)
+        for(int i = -numChunks/2; i < numChunks/2; i++)
         {
-            for(int j = -5; j < 5; j++)
+            for(int j = -numChunks / 2; j < numChunks / 2; j++)
             {
-                GenerateChunk(10 * i, 10 * j);
+                GenerateChunk(chunkWidth * i, chunkWidth * j);
             }
         }
         StartCoroutine(UpdateChunks());
     }
 
-    public void GenerateChunk(float x, float y)
+    public void GenerateChunk(int x, int y)
     {
         Chunk[] chunks = FindObjectsOfType<Chunk>();
         if (!Array.Find(chunks, ele => ele.x == x && ele.y == y))
@@ -38,8 +41,8 @@ public class GenerateTree : MonoBehaviour
             GameObject parent = new GameObject();
             parent.transform.position = new Vector3(x, 0, y);
             parent.name = "Chunk" + x + "_" + y;
-            BoxCollider bc = parent.AddComponent<BoxCollider>();
-            bc.size = new Vector3(chunkWidth - 0.5f, chunkWidth - 0.5f, chunkWidth - 0.5f);
+            //BoxCollider bc = parent.AddComponent<BoxCollider>();
+            //bc.size = new Vector3(chunkWidth - 0.5f, chunkWidth - 0.5f, chunkWidth - 0.5f);
             parent.AddComponent<Chunk>();
             Chunk c = parent.GetComponent<Chunk>();
             c.x = x;
@@ -72,17 +75,17 @@ public class GenerateTree : MonoBehaviour
     {
         yield return new WaitForSeconds(5);
         Chunk[] chunks = FindObjectsOfType<Chunk>();
-        for (int i = (int)transform.position.x - ((int)transform.position.x % 10) - 50; i < transform.position.x - ((int)transform.position.x % 10) + 50; i += 10)
+        for (int i = (int)transform.position.x - ((int)transform.position.x % chunkWidth) - (numChunks / 2) * chunkWidth; i < transform.position.x - ((int)transform.position.x % chunkWidth) + (numChunks / 2) * chunkWidth; i += chunkWidth)
         {
-            for (int j = (int)transform.position.z - ((int)transform.position.z % 10) - 50; j < transform.position.z - ((int)transform.position.z % 10) + 50; j += 10)
+            for (int j = (int)transform.position.z - ((int)transform.position.z % chunkWidth) - (numChunks / 2) * chunkWidth; j < transform.position.z - ((int)transform.position.z % chunkWidth) + (numChunks / 2) * chunkWidth; j += chunkWidth)
             {
                 GenerateChunk(i, j);
             }
         }
         foreach (Chunk c in chunks)
         {
-            if (c.x > transform.position.x + chunkWidth * 5f || c.x < transform.position.x - chunkWidth * 5f ||
-                c.y > transform.position.z + chunkWidth * 5f || c.y < transform.position.z - chunkWidth * 5f)
+            if (c.x > transform.position.x + chunkWidth * numChunks / 2 || c.x < transform.position.x - chunkWidth * numChunks / 2 ||
+                c.y > transform.position.z + chunkWidth * numChunks / 2 || c.y < transform.position.z - chunkWidth * numChunks / 2)
             {
                 DestroyChunk(c.x, c.y);
             }
