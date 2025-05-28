@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public Grove startingGrove;
+    
     public float walkingSpeed = 7.5f;
     public Camera playerCamera;
     public float lookSpeed = 2.0f;
@@ -25,6 +27,8 @@ public class PlayerController : MonoBehaviour
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        GroveManager.Initialize(startingGrove);
     }
 
     void Update()
@@ -42,12 +46,14 @@ public class PlayerController : MonoBehaviour
         characterController.Move(moveDirection * Time.deltaTime);
 
         // Player and Camera rotation
-        if (canMove)
+        if (canMove && !Input.GetMouseButton(0))
         {
             rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
+
+        GroveManager.CheckNewGrove(transform.position);
     }
 }

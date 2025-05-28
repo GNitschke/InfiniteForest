@@ -15,13 +15,13 @@ public class GenerateTree : MonoBehaviour
 
     bool switching;
 
-    // Start is called before the first frame update
     void Start()
     {
         chunkWidth = 10;
         numChunks = 4;
         numChunks -= numChunks % 2;
         seed = 0f;
+        
         for(int i = -numChunks/2; i < numChunks/2; i++)
         {
             for(int j = -numChunks / 2; j < numChunks / 2; j++)
@@ -30,6 +30,7 @@ public class GenerateTree : MonoBehaviour
             }
         }
         StartCoroutine(UpdateChunks());
+        
     }
 
     public void GenerateChunk(int x, int y)
