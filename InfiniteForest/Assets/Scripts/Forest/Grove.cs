@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grove : MonoBehaviour
+public class Grove
 {
+    public string name;
     public Grove[] neighbors = new Grove[6];
 
-    public GroveManager.GroveObject[] trees = new GroveManager.GroveObject[1];
+    public List<GroveManager.GroveObject> trees = new List<GroveManager.GroveObject>();
 
     public GroveInstance CreateInstance(Vector3 _position, int _layer)
     {
-        GroveInstance _groveInstance = new GameObject(name + "Instance").AddComponent<GroveInstance>();
+        GroveInstance _groveInstance = GroveManager.PullGrove();
+        _groveInstance.name = name + "Instance";
         _groveInstance.grove = this;
         _groveInstance.transform.position = _position;
 
         foreach (var _treeData in trees)
         {
-            GameObject _tree = GroveManager.pullTree();
+            GameObject _tree = GroveManager.PullTree();
             SetGameLayerRecursive(_tree, _layer);
             _tree.transform.parent = _groveInstance.transform;
             _tree.transform.localScale = Vector3.one;// * _treeData.size;
@@ -34,11 +36,11 @@ public class Grove : MonoBehaviour
             GameObject _child = _groveInstance.transform.GetChild(i).gameObject;
             if (_child.name == "TreeInstance")
             {
-                GroveManager.recycleTree(_child);
+                GroveManager.RecycleTree(_child);
             }
         }
 
-        Destroy(_groveInstance.gameObject);
+        GroveManager.RecycleGrove(_groveInstance.gameObject);
     }
 
     private void SetGameLayerRecursive(GameObject _gameObject, int _layer)
@@ -48,16 +50,5 @@ public class Grove : MonoBehaviour
         {
             SetGameLayerRecursive(_child.gameObject, _layer);
         }
-    }
-
-    [ExecuteInEditMode]
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        for(int i = 0; i < HexMetrics.corners.Length - 1; i++)
-        {
-            Gizmos.DrawLine(transform.position + HexMetrics.corners[i], transform.position + HexMetrics.corners[i + 1]);
-        }
-        Gizmos.DrawLine(transform.position + HexMetrics.corners[5], transform.position + HexMetrics.corners[0]);
     }
 }

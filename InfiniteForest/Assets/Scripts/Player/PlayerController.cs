@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Grove startingGrove;
-    
     public float walkingSpeed = 7.5f;
     public Camera playerCamera;
     public float lookSpeed = 2.0f;
@@ -27,8 +25,6 @@ public class PlayerController : MonoBehaviour
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        GroveManager.Initialize(startingGrove);
     }
 
     void Update()

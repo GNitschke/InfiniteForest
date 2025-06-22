@@ -19,6 +19,8 @@ public static class GroveManager
 
     private static Vector3 recycleBinPos = Vector3.down * 1000f;
 
+    private static List<GameObject> groveRecycler = new List<GameObject>();
+
     public static GameObject treePrefab;
     private static List<GameObject> treeRecycler = new List<GameObject>();
 
@@ -111,9 +113,26 @@ public static class GroveManager
         currGrove.InstanceNeighbors(exceptionEnable);
     }
 
-    public static GameObject pullTree()
+    public static GroveInstance PullGrove()
     {
-        GameObject _tree = pullFromRecycler(treeRecycler);
+        GroveInstance _grove = PullFromRecycler(groveRecycler).GetComponent<GroveInstance>();
+
+        if (_grove == null)
+        {
+            _grove = new GameObject().AddComponent<GroveInstance>();
+            _grove.name = "GroveInstance";
+        }
+
+        return _grove;
+    }
+    public static void RecycleGrove(GameObject _grove)
+    {
+        RecycleObject(_grove, groveRecycler);
+    }
+
+    public static GameObject PullTree()
+    {
+        GameObject _tree = PullFromRecycler(treeRecycler);
 
         if(_tree == null)
         {
@@ -123,18 +142,28 @@ public static class GroveManager
         
         return _tree;
     }
-    public static void recycleTree(GameObject _tree)
+    public static void RecycleTree(GameObject _tree)
     {
-        recycleObject(_tree, treeRecycler);
+        RecycleObject(_tree, treeRecycler);
     }
 
-    private static void recycleObject(GameObject _object, List<GameObject> _recycler)
+    public static GroveObject NewGoveObject(Vector3 _position, Vector3 _rotation, float _size)
+    {
+        return new GroveObject()
+        {
+            position = _position,
+            rotation = _rotation,
+            size = _size
+        };
+    }
+
+    private static void RecycleObject(GameObject _object, List<GameObject> _recycler)
     {
         _object.transform.position = recycleBinPos;
         _recycler.Add(_object);
     }
 
-    private static GameObject pullFromRecycler(List<GameObject> _recycler)
+    private static GameObject PullFromRecycler(List<GameObject> _recycler)
     {
         GameObject _object;
         if(_recycler.Count > 0)

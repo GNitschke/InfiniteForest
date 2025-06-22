@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GroveManagerSetup : MonoBehaviour
 {
+    public Grove startingGrove;
     public Grove impassableGrove;
     public GameObject treePrefab;
 
@@ -11,5 +12,7 @@ public class GroveManagerSetup : MonoBehaviour
     {
         GroveManager.impassableGrove = impassableGrove;
         GroveManager.treePrefab = treePrefab;
+
+        GroveManager.Initialize(startingGrove);
     }
 }
